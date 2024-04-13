@@ -6,9 +6,6 @@ export default function Chat() {
     const { isLoaded, userId, sessionId, getToken } = useAuth();
     const { isSignedIn, user } = useUser()
 
-
-    console.log('user',user)
-
     if (!isLoaded || !userId || !user) {
         return null;
     }
@@ -16,7 +13,7 @@ export default function Chat() {
     const [messages, updateMessages] = useState([]);
     const { channel } = useChannel('chat', (message) => {
         if (message.name === "message") {
-            console.log(message)
+            console.log('message', message)
             updateMessages((prev) => [...prev, message]);
         } else if (message.name === "delete") {
             const lookThisUpAndDelete = message.extras.ref.timeserial
@@ -24,7 +21,6 @@ export default function Chat() {
                 return msgs.filter(msg => msg.extras && msg.extras.timeserial !== lookThisUpAndDelete);
             })
             console.log('got a delete request')
-            console.log(message)
         }
     })
     const { updateStatus } = usePresence('chat')

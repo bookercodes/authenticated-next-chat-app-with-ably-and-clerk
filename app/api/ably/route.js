@@ -1,7 +1,26 @@
 import { currentUser } from '@clerk/nextjs';
 const Ably = require('ably');
+import { SignJWT } from "jose";
 
 // is this the best way to make an API route with app router?
+export const CreateJWT = (clientId, apiKey, claim) => {
+
+  const [appId, signingKey] = apiKey.split(":", 2);
+
+  const enc = new TextEncoder();
+  
+  const y=  new SignJWT({
+    "x-ably-capability": `{"*":["*"]}`,
+    "x-ably-clientId": clientId,
+    "ably.channel.*": claim,
+    // 'ably.limits.publish.perAttachment.maxRate.chat': 0.1,
+  })
+    .setProtectedHeader({ kid: appId, alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime("24h")
+    .sign(enc.encode(signingKey));
+    return y
+};
 
 export const GET = async (req, res) => {
   const user = await currentUser()
@@ -15,9 +34,9 @@ export const GET = async (req, res) => {
 
   // should be able to match Clerk roles/permissions or so with Ably
   const client = new Ably.Rest({ key: process.env.ABLY_SECRET_KEY });
-  const capability = {
-    'chat':   ['publish', 'subscribe', 'presence']
-  }
-  const tokenDetails = await client.auth.createTokenRequest({ clientId: user.id, capability })
+  // const tokenDetails = await client.auth.requestToken({ clientId: user.id })
+  const tokenDetails = await CreateJWT(user.id, process.env.ABLY_SECRET_KEY, "mod")
+  console.log(tokenDetails)
+  
   return Response.json(tokenDetails)
 }
