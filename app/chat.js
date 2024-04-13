@@ -6,6 +6,9 @@ export default function Chat() {
     const { isLoaded, userId, sessionId, getToken } = useAuth();
     const { isSignedIn, user } = useUser()
 
+
+    console.log('user',user)
+
     if (!isLoaded || !userId || !user) {
         return null;
     }
@@ -61,8 +64,15 @@ export default function Chat() {
         <div>
 
             <ul>
-                {messages.map(m => 
-                    <li>{m.clientId}: {m.data}<button onClick={() => deleteMessage(m.extras.timeserial)}>X</button></li>
+                {messages.map(m => {
+
+                    let btn 
+                    console.log(`${m.clientId}===${user.id}`)
+                    if (role === "mod" || m.clientId === user.id)
+                        btn = <button onClick={() => deleteMessage(m.extras.timeserial)}>X</button>
+
+                    return <li>{m.clientId}: {m.data}{btn}</li>
+                }
                 )}
             </ul>
         </div>
