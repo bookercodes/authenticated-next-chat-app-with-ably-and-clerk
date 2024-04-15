@@ -7,7 +7,7 @@ export const createJwt = (clientId, apiKey, claim) => {
   const token = new SignJWT({
     "x-ably-capability": `{"*":["*"]}`,
     "x-ably-clientId": clientId,
-    "ably.channel.*": claim,
+    "ably.channel.*": JSON.stringify(claim)
     // 'ably.limits.publish.perAttachment.maxRate.chat': 0.1,
   })
     .setProtectedHeader({ kid: appId, alg: "HS256" })
@@ -20,9 +20,10 @@ export const createJwt = (clientId, apiKey, claim) => {
 export const GET = async () => {
   const user = await currentUser()
   // todo - put Clerk metadata into Ably claim
-  const role = user.publicMetadata.role
+  const role = 'swafggg'
   console.log('role', role)
-  const tokenDetails = await createJwt(user.id, process.env.ABLY_SECRET_KEY, role)
+  const claim = user.publicMetadata
+  const tokenDetails = await createJwt(user.id, process.env.ABLY_SECRET_KEY, claim)
 
   return Response.json(tokenDetails)
 }
