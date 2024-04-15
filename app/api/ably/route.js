@@ -1,15 +1,10 @@
 import { currentUser } from '@clerk/nextjs';
-const Ably = require('ably');
 import { SignJWT } from "jose";
 
-// is this the best way to make an API route with app router?
-export const CreateJWT = (clientId, apiKey, claim) => {
-
+export const createJwt = (clientId, apiKey, claim) => {
   const [appId, signingKey] = apiKey.split(":", 2);
-
   const enc = new TextEncoder();
-  
-  const y=  new SignJWT({
+  const token = new SignJWT({
     "x-ably-capability": `{"*":["*"]}`,
     "x-ably-clientId": clientId,
     "ably.channel.*": claim,
@@ -19,24 +14,15 @@ export const CreateJWT = (clientId, apiKey, claim) => {
     .setIssuedAt()
     .setExpirationTime("24h")
     .sign(enc.encode(signingKey));
-    return y
+  return token
 };
 
-export const GET = async (req, res) => {
+export const GET = async () => {
   const user = await currentUser()
+  // todo - put Clerk metadata into Ably claim
+  const role = user.publicMetadata.role
+  console.log('role', role)
+  const tokenDetails = await createJwt(user.id, process.env.ABLY_SECRET_KEY, role)
 
-
-  // client
-  //  show X button if admin
-  //  show X button on own message
-  // server
-  //  need a way to add a claim to the Ably token that says "delete own message" or "delete any message"
-
-  // should be able to match Clerk roles/permissions or so with Ably
-  const client = new Ably.Rest({ key: process.env.ABLY_SECRET_KEY });
-  // const tokenDetails = await client.auth.requestToken({ clientId: user.id })
-  const tokenDetails = await CreateJWT(user.id, process.env.ABLY_SECRET_KEY, "mod")
-  console.log(tokenDetails)
-  
   return Response.json(tokenDetails)
 }

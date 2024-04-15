@@ -1,38 +1,47 @@
 import { useAuth, useUser, UserButton } from "@clerk/nextjs";
 import { useChannel, usePresence, usePresenceListener } from "ably/react"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Chat() {
-    const { isLoaded, userId, sessionId, getToken } = useAuth();
+
+    const [messages, updateMessages] = useState([]);
+
+    const { channel } = useChannel('chat', event => {
+        console.log('message', event)
+
+        if (event.name === "message") {
+            updateMessages(prev => [...prev, event]);
+            return
+        }
+
+        if (event.name === "delete") {
+            updateMessages(prev => {
+                return prev.filter(message => {
+                    if (message.extras.timeserial === event.extras.ref.timeserial) {
+                        if (message.clientId === event.clientId || event.extras.userClaim === "mod") {
+                            return null
+                        }
+                    }
+                    return message
+                })
+            })
+        }
+    })
+
+    const { updateStatus } = usePresence('chat')
+    const { presenceData } = usePresenceListener('chat');
+    const { isLoaded, userId, sessionId, getToken } = useAuth()
     const { isSignedIn, user } = useUser()
 
     if (!isLoaded || !userId || !user) {
         return null;
     }
 
-    const [messages, updateMessages] = useState([]);
-    const { channel } = useChannel('chat', (message) => {
-        if (message.name === "message") {
-            console.log('message', message)
-            updateMessages((prev) => [...prev, message]);
-        } else if (message.name === "delete") {
-            const lookThisUpAndDelete = message.extras.ref.timeserial
-            updateMessages((msgs) => {
-                return msgs.filter(msg => msg.extras && msg.extras.timeserial !== lookThisUpAndDelete);
-            })
-            console.log('got a delete request')
-        }
-    })
-    const { updateStatus } = usePresence('chat')
-    const { presenceData } = usePresenceListener('chat');
-
     const sendMessage = text => channel.publish('message', text)
 
     const peers = presenceData.map((msg, index) => <li key={index}>{msg.clientId}: {msg.data}</li>);
 
-
     const role = user.publicMetadata.role
-    console.log('role', role)
 
     const deleteMessage = async timeserial => {
         await channel.publish({
@@ -62,8 +71,7 @@ export default function Chat() {
             <ul>
                 {messages.map(m => {
 
-                    let btn 
-                    console.log(`${m.clientId}===${user.id}`)
+                    let btn
                     if (role === "mod" || m.clientId === user.id)
                         btn = <button onClick={() => deleteMessage(m.extras.timeserial)}>X</button>
 

@@ -16,6 +16,7 @@ export default function Home() {
   }
 
   const client = new Ably.Realtime({ authUrl: '/api/ably' })
+  console.log('connecting')
 
   return (
     <main className={styles.main}>
