@@ -39,6 +39,7 @@ export const GET = async () => {
     capability = {
       'chat:general': ['subscribe', 'publish', 'presence'],
       'chat:random': ['subscribe', 'publish', 'presence'],
+      'chat:announcements': ['subscribe', 'presence']
     }
   }
 

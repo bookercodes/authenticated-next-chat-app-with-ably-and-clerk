@@ -18,6 +18,9 @@ export default function ChatLayout({
         <aside>
             <ul>
                 <li>
+                    <Link href="/chat/announcements">#Announcements</Link>
+                </li>
+                <li>
                     <Link href="/chat/general">#General</Link>
                 </li>
                 <li>
