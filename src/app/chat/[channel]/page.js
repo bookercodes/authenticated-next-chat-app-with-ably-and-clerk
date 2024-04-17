@@ -1,6 +1,8 @@
 'use client'
 
 import { useChannel, usePresence, usePresenceListener } from "ably/react"
+import { EllipsisVertical } from 'lucide-react';
+import { Circle } from 'lucide-react';
 import * as Ably from 'ably';
 import { ChannelProvider, AblyProvider } from 'ably/react'
 import { useState } from "react"
@@ -12,6 +14,16 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable"
 import { Input } from "@/components/ui/input"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarTrigger,
+} from "@/components/ui/menubar"
 
 const EVENT_NAMES = {
   MESSAGE: 'message',
@@ -34,6 +46,9 @@ const ChatPage = ({ params }) => {
 
 const Chat = ({ channelName }) => {
   const { user } = useUser()
+
+  if (!user) return null
+
   const [messages, updateMessages] = useState([])
 
   const handleEvent = event => {
@@ -65,10 +80,12 @@ const Chat = ({ channelName }) => {
   }
   const { publish: publishEvent } = useChannel(channelName, handleEvent)
   const { presenceData } = usePresenceListener(channelName)
-  usePresence(channelName)
+  usePresence(channelName, {fullName: user.fullName})
+  
 
   const sendMesage = message => {
-    publishEvent('message', message)
+    console.log(user)
+    publishEvent('message', {text:message, avatarUrl: user.imageUrl})
   }
 
   const deleteMessage = timeSerial => {
@@ -84,7 +101,8 @@ const Chat = ({ channelName }) => {
 
   return (
     <>
-      <ResizablePanel defaultSize={50} className="px-5">
+      <ResizablePanel defaultSize={50} className="p-5 flex flex-col-reverse">
+        <MessageInput onSubmit={sendMesage} />
         <ul>
           {messages.map(message =>
             <MessageListItem
@@ -94,10 +112,10 @@ const Chat = ({ channelName }) => {
               deleteMessage={deleteMessage}
               userIsMod={user.publicMetadata.isMod} />)}
         </ul>
-        <MessageInput onSubmit={sendMesage} />
       </ResizablePanel>
       <ResizableHandle withHandle />
-      <ResizablePanel defaultSize={30} className="px-5">
+      <ResizablePanel defaultSize={30} className="p-5">
+        <h2 className="mb-3">Present and together right now with you in {channelName}:</h2>
         <OnlineList users={presenceData} />
       </ResizablePanel>
     </>
@@ -130,8 +148,9 @@ const MessageInput = ({ onSubmit }) => {
 
 
 const OnlineList = ({ users }) => {
+  console.log('users', users)
   return <ul>
-    {users.map((user, index) => <li key={index}>ONLINE {user.clientId}</li>)}
+    {users.map((user, index) => <li key={index} className="flex items-center mt-1"><Circle size={8} fill="#01FE19" color="#01FE19" className="mr-1" />{user.data.fullName}</li>)}
   </ul>
 }
 
@@ -145,9 +164,25 @@ const MessageListItem = ({ message, userId, userIsMod, deleteMessage }) => {
   const userCanDelete = userIsMod || clientId === userId
 
   return (
-    <li key={message.id}>
-      {data}
-      {userCanDelete && <button onClick={handleClick}>X</button>}
+    <li key={message.id} className="p-3 my-2 bg-slate-50 rounded-lg flex justify-between relative">
+      <div className="flex items-center">
+      <Avatar className='mr-2'>
+        <AvatarImage src={data.avatarUrl}/>
+        {/* <AvatarFallback>CN</AvatarFallback> */}
+      </Avatar>
+      {data.text}
+</div>
+      {/* {userCanDelete && <button onClick={handleClick}>X</button>} */}
+      <Menubar>
+        <MenubarMenu>
+          <MenubarTrigger>
+            <EllipsisVertical size={16} />
+          </MenubarTrigger>
+          <MenubarContent>
+            <MenubarItem disabled={!userCanDelete} onClick={handleClick}>Delete</MenubarItem>
+          </MenubarContent>
+        </MenubarMenu>
+      </Menubar>
     </li>
   )
 }
