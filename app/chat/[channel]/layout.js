@@ -1,18 +1,10 @@
 'use client'
 
-import * as Ably from 'ably';
-import { AblyProvider } from 'ably/react'
 import Link from 'next/link'
 import { UserButton } from "@clerk/nextjs";
-import dynamic from 'next/dynamic';
 
 
-export default dynamic(() => Promise.resolve(ChatLayout), {
-    ssr: false
-})
-
-const ChatLayout = ({ children }) => {
-    const client = new Ably.Realtime({ authUrl: '/api/ably' })
+export default function ChatLayout ({ children }) {
     return <>
         <nav>
             <h1>Comet</h1>
@@ -35,9 +27,6 @@ const ChatLayout = ({ children }) => {
                 </li>
             </ul>
         </aside>
-        <AblyProvider client={client}>
-            {children}
-        </AblyProvider>
-
+        {children}
     </>
 }

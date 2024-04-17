@@ -1,28 +1,35 @@
 'use client'
 
 import { useChannel, usePresence, usePresenceListener } from "ably/react"
-import { ChannelProvider } from 'ably/react'
+import * as Ably from 'ably';
+import { ChannelProvider, AblyProvider } from 'ably/react'
 import { useState } from "react"
 import { useUser } from "@clerk/nextjs"
-import dynamic from 'next/dynamic'
+import dynamic from 'next/dynamic';
 
 const EVENT_NAMES = {
   MESSAGE: 'message',
   DELETE: 'delete'
 };
 
-export default function ChatPage({ params }) {
+export default dynamic(() => Promise.resolve(ChatPage), {
+    ssr: false
+})
+const  ChatPage = ({ params })=> {
+  const client = new Ably.Realtime({ authUrl: '/api/ably' })
   const channelName = `chat:${params.channel}`
   return (
-    <ChannelProvider channelName={channelName} options={{ params: { rewind: '100' } }}>
-      <Chat channelName={channelName} />
-    </ChannelProvider>
+    <AblyProvider client={client}>
+      <ChannelProvider channelName={channelName} options={{ params: { rewind: '100' } }}>
+        <Chat channelName={channelName} />
+      </ChannelProvider></AblyProvider>
   )
 }
 
 const Chat = ({ channelName }) => {
   const { user } = useUser()
   const [messages, updateMessages] = useState([])
+
   const handleEvent = event => {
     console.log('event', event)
     if (event.name === EVENT_NAMES.MESSAGE) {
@@ -132,7 +139,7 @@ const MessageListItem = ({ message, userId, userIsMod, deleteMessage }) => {
 
   return (
     <li key={message.id}>
-      {data} 
+      {data}
       {userCanDelete && <button onClick={handleClick}>X</button>}
     </li>
   )
