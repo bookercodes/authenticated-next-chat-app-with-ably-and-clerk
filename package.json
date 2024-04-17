@@ -11,10 +11,16 @@
   "dependencies": {
     "@clerk/nextjs": "^4.29.12",
     "ably": "^2.0.2",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.0",
     "jose": "^5.2.4",
+    "lucide-react": "^0.368.0",
     "next": "14.2.1",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-resizable-panels": "^2.0.17",
+    "tailwind-merge": "^2.2.2",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "eslint": "^8",

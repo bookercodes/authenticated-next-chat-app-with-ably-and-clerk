@@ -6,6 +6,12 @@ import { ChannelProvider, AblyProvider } from 'ably/react'
 import { useState } from "react"
 import { useUser } from "@clerk/nextjs"
 import dynamic from 'next/dynamic';
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable"
+import { Input } from "@/components/ui/input"
 
 const EVENT_NAMES = {
   MESSAGE: 'message',
@@ -13,9 +19,9 @@ const EVENT_NAMES = {
 };
 
 export default dynamic(() => Promise.resolve(ChatPage), {
-    ssr: false
+  ssr: false
 })
-const  ChatPage = ({ params })=> {
+const ChatPage = ({ params }) => {
   const client = new Ably.Realtime({ authUrl: '/api/ably' })
   const channelName = `chat:${params.channel}`
   return (
@@ -78,9 +84,7 @@ const Chat = ({ channelName }) => {
 
   return (
     <>
-      <h2>{channelName}</h2>
-      <OnlineList users={presenceData} />
-      <>
+      <ResizablePanel defaultSize={50} className="px-5">
         <ul>
           {messages.map(message =>
             <MessageListItem
@@ -90,8 +94,12 @@ const Chat = ({ channelName }) => {
               deleteMessage={deleteMessage}
               userIsMod={user.publicMetadata.isMod} />)}
         </ul>
-      </>
-      <MessageInput onSubmit={sendMesage} />
+        <MessageInput onSubmit={sendMesage} />
+      </ResizablePanel>
+      <ResizableHandle withHandle />
+      <ResizablePanel defaultSize={30} className="px-5">
+        <OnlineList users={presenceData} />
+      </ResizablePanel>
     </>
   )
 }
@@ -110,13 +118,12 @@ const MessageInput = ({ onSubmit }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <input
+      <Input
         type="text"
         value={input}
         onChange={handleChange}
         placeholder="Type a message"
       />
-      <button type="submit">Submit</button>
     </form>
   )
 }
