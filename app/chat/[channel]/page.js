@@ -4,6 +4,7 @@ import { useChannel, usePresence, usePresenceListener } from "ably/react"
 import { ChannelProvider } from 'ably/react'
 import { useState } from "react"
 import { useUser } from "@clerk/nextjs"
+import dynamic from 'next/dynamic'
 
 const EVENT_NAMES = {
   MESSAGE: 'message',
@@ -76,6 +77,7 @@ const Chat = ({ channelName }) => {
         <ul>
           {messages.map(message =>
             <MessageListItem
+              key={message.id}
               message={message}
               userId={user.id}
               deleteMessage={deleteMessage}
@@ -129,7 +131,7 @@ const MessageListItem = ({ message, userId, userIsMod, deleteMessage }) => {
   const userCanDelete = userIsMod || clientId === userId
 
   return (
-    <li>
+    <li key={message.id}>
       {data} 
       {userCanDelete && <button onClick={handleClick}>X</button>}
     </li>
