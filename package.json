@@ -1,5 +1,5 @@
 {
-  "name": "comet",
+  "name": "comet3",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,15 +9,17 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@clerk/nextjs": "^4.29.7",
+    "@clerk/nextjs": "^4.29.12",
     "ably": "^2.0.2",
     "jose": "^5.2.4",
-    "next": "14.1.0",
+    "next": "14.2.1",
     "react": "^18",
     "react-dom": "^18"
   },
   "devDependencies": {
     "eslint": "^8",
-    "eslint-config-next": "14.1.0"
+    "eslint-config-next": "14.2.1",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1"
   }
 }
