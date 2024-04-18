@@ -4,11 +4,38 @@ import Link from 'next/link'
 import { UserButton } from "@clerk/nextjs";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { usePathname } from 'next/navigation'
+import { useUser, useAuth } from "@clerk/nextjs"
+import { Lock } from 'lucide-react';
+import { useId } from 'react';
 
+const ChannelLink = ({channelPath, channelName, modOnly}) => {
+    const currentPath = usePathname()
+    const { user } = useUser()
+    const userIsMod = user?.publicMetadata?.isMod
 
+    if (modOnly && !userIsMod) {
+        return <li>
+            <Link 
+                className={`link flex items-center pointer-events-none ${currentPath === channelPath ? 'font-bold' : ''}`}
+                aria-disabled={true}
+                href={channelPath}>
+                    {channelName}
+                    <Lock size={16}/>
+            </Link>
+        </li>
+    } 
 
+    return <li>
+        <Link 
+            className={`link ${currentPath === channelPath ? 'font-bold' : ''}`}
+            href={channelPath}>
+                {channelName}
+        </Link>
+    </li>
+
+}
 export default function ChatLayout ({ children }) {
-    const pathname = usePathname()
+
     return <div>
         <nav className='flex justify-between px-5 py-5 border-b border-gray-200'>
             <h1 className='font-bold'>Comet</h1>
@@ -19,19 +46,10 @@ export default function ChatLayout ({ children }) {
         <ResizablePanelGroup direction="horizontal">
             <ResizablePanel defaultSize={30} className='p-5'>
             <ul>
-                <li>
-                    <Link className={`link ${pathname === '/chat/announcements' ? 'font-bold' : ''}`} href="/chat/announcements">#Announcements</Link>
-
-                </li>
-                <li>
-                    <Link className={`link ${pathname === '/chat/general' ? 'font-bold' : ''}`} href="/chat/general">#General</Link>
-                </li>
-                <li>
-                    <Link className={`link ${pathname === '/chat/random' ? 'font-bold' : ''}`} href="/chat/random">#Random</Link>
-                </li>
-                <li>
-                    <Link className={`link ${pathname === '/chat/mods-only' ? 'font-bold' : ''}`} href="/chat/mods-only">#Mods-only</Link>
-                </li>
+                <ChannelLink channelPath={'/chat/announcements'} channelName={'#Announcements'} />
+                <ChannelLink channelPath={'/chat/general'} channelName={'#General'} />
+                <ChannelLink channelPath={'/chat/random'} channelName={'#Random'} />
+                <ChannelLink channelPath={'/chat/mods-only'} channelName={'#Mods-only'} modOnly />
             </ul>
             </ResizablePanel>
             <ResizableHandle withHandle />

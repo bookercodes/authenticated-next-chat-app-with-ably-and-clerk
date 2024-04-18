@@ -102,7 +102,9 @@ const Chat = ({ channelName }) => {
   return (
     <>
       <ResizablePanel defaultSize={50} className="p-5 flex flex-col-reverse">
-        <MessageInput onSubmit={sendMesage} />
+        <MessageInput
+          onSubmit={sendMesage}
+          disabled={channelName === 'chat:announcements' && !user.publicMetadata.isMod}/>
         <ul>
           {messages.map(message =>
             <MessageListItem
@@ -123,7 +125,7 @@ const Chat = ({ channelName }) => {
 }
 
 
-const MessageInput = ({ onSubmit }) => {
+const MessageInput = ({ onSubmit, disabled }) => {
   const [input, setInput] = useState('')
   const handleChange = event => {
     setInput(event.target.value)
@@ -133,9 +135,9 @@ const MessageInput = ({ onSubmit }) => {
     onSubmit(input)
     setInput('')
   }
-
+  if (disabled) return <p>This channel is read-only...</p>
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} disabled>
       <Input
         type="text"
         value={input}
@@ -148,7 +150,6 @@ const MessageInput = ({ onSubmit }) => {
 
 
 const OnlineList = ({ users }) => {
-  console.log('users', users)
   return <ul>
     {users.map((user, index) => <li key={index} className="flex items-center mt-1"><Circle size={8} fill="#01FE19" color="#01FE19" className="mr-1" />{user.data.fullName}</li>)}
   </ul>
@@ -164,7 +165,7 @@ const MessageListItem = ({ message, userId, userIsMod, deleteMessage }) => {
   const userCanDelete = userIsMod || clientId === userId
 
   return (
-    <li key={message.id} className="p-3 my-2 bg-slate-50 rounded-lg flex justify-between relative">
+    <li key={message.id} className="p-3 my-2 bg-slate-50 rounded-lg flex justify-between relative group">
       <div className="flex items-center">
       <Avatar className='mr-2'>
         <AvatarImage src={data.avatarUrl}/>
