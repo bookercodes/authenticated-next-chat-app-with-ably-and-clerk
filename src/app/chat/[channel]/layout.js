@@ -39,12 +39,12 @@ export default function ChatLayout({ children }) {
     return <div>
         <nav className='flex justify-between px-5 py-5 border-b border-gray-200'>
             <h1 className='font-bold'>Comet</h1>
-            <UserButton showName={true} />
+            <UserButton showName={true} afterSignOutUrl="/"/>
         </nav>
         <main className='h-[calc(100vh-96px)]'>
 
             <ResizablePanelGroup direction="horizontal">
-                <ResizablePanel defaultSize={20} className='p-5'>
+                <ResizablePanel defaultSize={30} className='p-5'>
                     <ul>
                         <ChannelLink channelPath={'/chat/announcements'} channelName={'#Announcements'} />
                         <ChannelLink channelPath={'/chat/general'} channelName={'#General'} />
@@ -53,7 +53,7 @@ export default function ChatLayout({ children }) {
                     </ul>
                 </ResizablePanel>
                 <ResizableHandle withHandle />
-                <ResizablePanel defaultSize={80}>
+                <ResizablePanel defaultSize={70}>
                     {children}
                 </ResizablePanel>
             </ResizablePanelGroup>
