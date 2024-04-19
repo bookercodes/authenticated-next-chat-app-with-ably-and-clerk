@@ -5,7 +5,7 @@ import { EllipsisVertical } from 'lucide-react';
 import { Circle } from 'lucide-react';
 import * as Ably from 'ably';
 import { ChannelProvider, AblyProvider } from 'ably/react'
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useUser } from "@clerk/nextjs"
 import dynamic from 'next/dynamic';
 import {
@@ -43,13 +43,7 @@ export default function ChatPage({ params }) {
       </ChannelProvider></AblyProvider>
   )
 }
-
 const Chat = ({ channelName }) => {
-  const { publish: publishEvent } = useChannel(channelName, handleEvent)
-  const { presenceData } = usePresenceListener(channelName)
-  usePresence(channelName, { fullName: user.fullName })
-  const [messages, updateMessages] = useState([])
-  const { user } = useUser()
 
   const handleEvent = event => {
     console.log('event', event)
@@ -79,6 +73,21 @@ const Chat = ({ channelName }) => {
 
   }
 
+  const { user } = useUser()
+  const { publish: publishEvent } = useChannel(channelName, handleEvent)
+  const { presenceData } = usePresenceListener(channelName)
+  const { updateStatus} = usePresence(channelName, {fullName:"loading"})
+  const [messages, updateMessages] = useState([])
+
+  useEffect(() => {
+    if (user) {
+      updateStatus({ fullName: user.fullName})
+    }
+  }, [updateStatus, user])
+
+  if (!user) {
+    return null
+  }
 
   const sendMesage = message => {
     console.log(user)
@@ -95,6 +104,7 @@ const Chat = ({ channelName }) => {
       }
     })
   }
+
 
   return (
     <ResizablePanelGroup direction="horizontal">
@@ -147,6 +157,7 @@ const MessageInput = ({ onSubmit, disabled }) => {
 
 
 const OnlineList = ({ users }) => {
+  console.log('users',users)
   return <ul>
     {users.map((user, index) => <li key={index} className="flex items-center mt-1"><Circle size={8} fill="#01FE19" color="#01FE19" className="mr-1" />{user.data.fullName}</li>)}
   </ul>
