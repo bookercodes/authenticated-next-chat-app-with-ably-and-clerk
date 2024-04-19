@@ -4,7 +4,7 @@ import { SignJWT } from "jose"
 const createToken = (clientId, apiKey, claim, capability) => {
   const [appId, signingKey] = apiKey.split(":", 2)
   const enc = new TextEncoder()
-
+  // hack? Can i just use the Clerk token instead of generating a new one? 
   const token = new SignJWT({
     "x-ably-capability": JSON.stringify(capability),
     "x-ably-clientId": clientId,

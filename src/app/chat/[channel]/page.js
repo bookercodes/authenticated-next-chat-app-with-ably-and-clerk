@@ -100,8 +100,8 @@ const Chat = ({ channelName }) => {
   }
 
   return (
-    <>
-      <ResizablePanel defaultSize={50} className="p-5 flex flex-col-reverse">
+    <ResizablePanelGroup direction="horizontal">
+      <ResizablePanel defaultSize={71.5} className="p-5 flex flex-col-reverse">
         <MessageInput
           onSubmit={sendMesage}
           disabled={channelName === 'chat:announcements' && !user.publicMetadata.isMod}/>
@@ -116,11 +116,11 @@ const Chat = ({ channelName }) => {
         </ul>
       </ResizablePanel>
       <ResizableHandle withHandle />
-      <ResizablePanel defaultSize={30} className="p-5">
+      <ResizablePanel defaultSize={28.5} className="p-5">
         <h2 className="mb-3">Present and together right now with you in {channelName}:</h2>
         <OnlineList users={presenceData} />
       </ResizablePanel>
-    </>
+    </ResizablePanelGroup>
   )
 }
 
