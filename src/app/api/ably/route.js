@@ -1,4 +1,4 @@
-import { currentUser } from '@clerk/nextjs';
+import { currentUser, auth } from '@clerk/nextjs';
 import { SignJWT } from "jose"
 
 const createToken = (clientId, apiKey, claim, capability) => {
@@ -32,6 +32,10 @@ const generateCapability = claim => {
 
 export const GET = async () => {
   const user = await currentUser()
+  const a = auth()
+  const clerkToken = await a.getToken()
+  console.log('clerkToken', clerkToken)
+  
   const userClaim = user.publicMetadata
   const userCapability = generateCapability(userClaim)
 

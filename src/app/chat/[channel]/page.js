@@ -30,11 +30,11 @@ const EVENT_NAMES = {
   DELETE: 'delete'
 };
 
-export default dynamic(() => Promise.resolve(ChatPage), {
-  ssr: false
-})
-const ChatPage = ({ params }) => {
-  const client = new Ably.Realtime({ authUrl: '/api/ably' })
+// export default dynamic(() => Promise.resolve(ChatPage), {
+//   ssr: false
+// })
+export default function ChatPage({ params }) {
+  const client = new Ably.Realtime({ authUrl: '/api/ably', autoConnect: typeof window !== 'undefined' })
   const channelName = `chat:${params.channel}`
   return (
     <AblyProvider client={client}>
@@ -45,11 +45,11 @@ const ChatPage = ({ params }) => {
 }
 
 const Chat = ({ channelName }) => {
-  const { user } = useUser()
-
-  if (!user) return null
-
+  const { publish: publishEvent } = useChannel(channelName, handleEvent)
+  const { presenceData } = usePresenceListener(channelName)
+  usePresence(channelName, { fullName: user.fullName })
   const [messages, updateMessages] = useState([])
+  const { user } = useUser()
 
   const handleEvent = event => {
     console.log('event', event)
@@ -78,14 +78,11 @@ const Chat = ({ channelName }) => {
     }
 
   }
-  const { publish: publishEvent } = useChannel(channelName, handleEvent)
-  const { presenceData } = usePresenceListener(channelName)
-  usePresence(channelName, {fullName: user.fullName})
-  
+
 
   const sendMesage = message => {
     console.log(user)
-    publishEvent('message', {text:message, avatarUrl: user.imageUrl})
+    publishEvent('message', { text: message, avatarUrl: user.imageUrl })
   }
 
   const deleteMessage = timeSerial => {
@@ -104,7 +101,7 @@ const Chat = ({ channelName }) => {
       <ResizablePanel defaultSize={71.5} className="p-5 flex flex-col-reverse">
         <MessageInput
           onSubmit={sendMesage}
-          disabled={channelName === 'chat:announcements' && !user.publicMetadata.isMod}/>
+          disabled={channelName === 'chat:announcements' && !user.publicMetadata.isMod} />
         <ul>
           {messages.map(message =>
             <MessageListItem
@@ -167,12 +164,12 @@ const MessageListItem = ({ message, userId, userIsMod, deleteMessage }) => {
   return (
     <li key={message.id} className="p-3 my-2 bg-slate-50 rounded-lg flex justify-between relative group">
       <div className="flex items-center">
-      <Avatar className='mr-2'>
-        <AvatarImage src={data.avatarUrl}/>
-        {/* <AvatarFallback>CN</AvatarFallback> */}
-      </Avatar>
-      {data.text}
-</div>
+        <Avatar className='mr-2'>
+          <AvatarImage src={data.avatarUrl} />
+          {/* <AvatarFallback>CN</AvatarFallback> */}
+        </Avatar>
+        {data.text}
+      </div>
       {/* {userCanDelete && <button onClick={handleClick}>X</button>} */}
       <Menubar>
         <MenubarMenu>
