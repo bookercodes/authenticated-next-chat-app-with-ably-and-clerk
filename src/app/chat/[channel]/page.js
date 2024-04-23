@@ -1,27 +1,25 @@
 'use client'
-
+import * as Ably from 'ably';
 import { useChannel, usePresence, usePresenceListener } from "ably/react"
 import { EllipsisVertical } from 'lucide-react';
 import { Circle } from 'lucide-react';
-import * as Ably from 'ably';
 import { ChannelProvider, AblyProvider } from 'ably/react'
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useUser } from "@clerk/nextjs"
-import dynamic from 'next/dynamic';
+import dynamic from 'next/dynamic'
+
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable"
 import { Input } from "@/components/ui/input"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import {
   Menubar,
   MenubarContent,
   MenubarItem,
   MenubarMenu,
-  MenubarSeparator,
-  MenubarShortcut,
   MenubarTrigger,
 } from "@/components/ui/menubar"
 
@@ -30,23 +28,24 @@ const EVENT_NAMES = {
   DELETE: 'delete'
 };
 
-// export default dynamic(() => Promise.resolve(ChatPage), {
-//   ssr: false
-// })
-export default function ChatPage({ params }) {
+export default dynamic(() => Promise.resolve(ChatPage), {
+  ssr: false
+})
+
+function ChatPage({ params }) {
   const client = new Ably.Realtime({ authUrl: '/api/ably', autoConnect: typeof window !== 'undefined' })
   const channelName = `chat:${params.channel}`
   return (
     <AblyProvider client={client}>
       <ChannelProvider channelName={channelName} options={{ params: { rewind: '100' } }}>
         <Chat channelName={channelName} />
-      </ChannelProvider></AblyProvider>
+      </ChannelProvider>
+    </AblyProvider>
   )
 }
-const Chat = ({ channelName }) => {
 
+const Chat = ({ channelName }) => {
   const handleEvent = event => {
-    console.log('event', event)
     if (event.name === EVENT_NAMES.MESSAGE) {
       updateMessages(prev => [...prev, event])
       return
@@ -73,24 +72,18 @@ const Chat = ({ channelName }) => {
 
   }
 
+
   const { user } = useUser()
   const { publish: publishEvent } = useChannel(channelName, handleEvent)
   const { presenceData } = usePresenceListener(channelName)
-  const { updateStatus} = usePresence(channelName, {fullName:"loading"})
   const [messages, updateMessages] = useState([])
-
-  useEffect(() => {
-    if (user) {
-      updateStatus({ fullName: user.fullName})
-    }
-  }, [updateStatus, user])
+  usePresence(channelName, { fullName: user?.fullName })
 
   if (!user) {
     return null
   }
 
   const sendMesage = message => {
-    console.log(user)
     publishEvent('message', { text: message, avatarUrl: user.imageUrl })
   }
 
@@ -157,7 +150,6 @@ const MessageInput = ({ onSubmit, disabled }) => {
 
 
 const OnlineList = ({ users }) => {
-  console.log('users',users)
   return <ul>
     {users.map((user, index) => <li key={index} className="flex items-center mt-1"><Circle size={8} fill="#01FE19" color="#01FE19" className="mr-1" />{user.data.fullName}</li>)}
   </ul>

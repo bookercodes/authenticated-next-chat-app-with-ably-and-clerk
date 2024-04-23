@@ -4,9 +4,8 @@ import Link from 'next/link'
 import { UserButton } from "@clerk/nextjs";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { usePathname } from 'next/navigation'
-import { useUser, useAuth } from "@clerk/nextjs"
+import { useUser } from "@clerk/nextjs"
 import { Lock } from 'lucide-react';
-import { useId } from 'react';
 
 const ChannelLink = ({ channelPath, channelName, modOnly }) => {
     const currentPath = usePathname()
@@ -35,11 +34,10 @@ const ChannelLink = ({ channelPath, channelName, modOnly }) => {
 
 }
 export default function ChatLayout({ children }) {
-
     return <div>
         <nav className='flex justify-between px-5 py-5 border-b border-gray-200'>
             <h1 className='font-bold'>Comet</h1>
-            <UserButton showName={true} afterSignOutUrl="/"/>
+            <UserButton showName={true} afterSignOutUrl="/" />
         </nav>
         <main className='h-[calc(100vh-96px)]'>
 

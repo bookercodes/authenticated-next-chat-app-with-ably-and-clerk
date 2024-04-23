@@ -35,7 +35,7 @@ export const GET = async () => {
   const a = auth()
   const clerkToken = await a.getToken()
   console.log('clerkToken', clerkToken)
-  
+
   const userClaim = user.publicMetadata
   const userCapability = generateCapability(userClaim)
 
