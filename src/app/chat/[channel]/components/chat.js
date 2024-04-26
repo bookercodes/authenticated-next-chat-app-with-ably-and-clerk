@@ -13,7 +13,6 @@ import WhosOnlineList from "./whos-online-list"
 import { useUser } from "@clerk/nextjs"
 import { useState } from "react"
 
-
 const Chat = ({ channelName }) => {
 
   const publishMessage = text => {
@@ -70,7 +69,10 @@ const Chat = ({ channelName }) => {
 
   return <>
     <>
-      <MessageList messages={messages} user={user} onDelete={deleteMessage} />
+      <MessageList
+        messages={messages}
+        user={user}
+        onDelete={deleteMessage} />
       <MessageInput onSubmit={publishMessage} />
     </>
     <WhosOnlineList />

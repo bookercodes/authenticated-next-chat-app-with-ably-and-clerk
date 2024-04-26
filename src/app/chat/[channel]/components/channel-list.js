@@ -14,7 +14,7 @@ const ChannelList = ({ channels }) => {
 
   const createLi = channel => {
     const locked = channel.modOnly && !userIsMod
-    return <li>
+    return <li key={channel.path}>
       <Link
         href={channel.path}
         className={clsx('flex items-center', {
