@@ -1,6 +1,7 @@
 'use client'
 import { usePresence, usePresenceListener } from "ably/react"
 import { useUser } from "@clerk/nextjs"
+import { Circle } from 'lucide-react';
 
 const WhosOnlineList = ({ channelName }) => {
 
@@ -10,9 +11,17 @@ const WhosOnlineList = ({ channelName }) => {
   const { presenceData } = usePresenceListener(channelName)
   usePresence(channelName, { fullName: user.fullName })
   const users = presenceData
+  const color = "#01FE19"
 
   const createLi = user => {
-    return <li key={user.id}>{user.data.fullName}</li>
+    return (
+      <li
+        key={user.id}
+        className="flex items-center">
+        <Circle className="mr-1" size={8} fill={color} color={color} />
+        {user.data.fullName}
+      </li>
+    )
   }
 
   return <div>

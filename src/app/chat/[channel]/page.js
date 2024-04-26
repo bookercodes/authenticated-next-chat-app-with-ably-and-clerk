@@ -25,6 +25,7 @@ const Page = ({ params }) => {
     // How do I stop this reconnecting every time? useCallback? Put it in Layout? Something else?
     <AblyProvider client={client} >
       <ChannelProvider channelName={channelName}>
+        {/* Is there a better way than clac? I don't like relying on a fixed num - feels brittle */}
         <div className="grid grid-cols-4 h-[calc(100vh-72.8px)]">
           <div className="border-r border-gray-200 p-5">
             <ChannelList channels={channels} />
