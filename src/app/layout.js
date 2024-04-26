@@ -1,5 +1,5 @@
 import { Inter } from "next/font/google";
-import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
+import { ClerkLoaded, ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 
 import "./globals.css";
 
@@ -25,9 +25,9 @@ export default function RootLayout({ children }) {
             </SignedIn>
           </nav>
 
-          <main>
+          <ClerkLoaded>
             {children}
-          </main>
+          </ClerkLoaded>
 
         </body>
       </html>

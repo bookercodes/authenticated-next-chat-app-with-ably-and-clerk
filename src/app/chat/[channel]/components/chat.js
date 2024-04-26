@@ -1,15 +1,7 @@
 'use client'
-import { Realtime } from "ably"
-import {
-  AblyProvider,
-  ChannelProvider,
-  useChannel,
-  usePresence,
-  usePresenceListener
-} from "ably/react"
+import { useChannel, } from "ably/react"
 import MessageInput from "./message-input"
 import MessageList from "./message-list"
-import WhosOnlineList from "./whos-online-list"
 import { useUser } from "@clerk/nextjs"
 import { useState } from "react"
 
@@ -67,28 +59,13 @@ const Chat = ({ channelName }) => {
   const { publish } = useChannel(channelName, handleEvent)
   const [messages, updateMessages] = useState([])
 
-  return <>
-    <>
-      <MessageList
-        messages={messages}
-        user={user}
-        onDelete={deleteMessage} />
-      <MessageInput onSubmit={publishMessage} />
-    </>
-    <WhosOnlineList />
-  </>
+  return <div className="flex flex-col justify-end h-full">
+    <MessageList
+      messages={messages}
+      user={user}
+      onDelete={deleteMessage} />
+    <MessageInput onSubmit={publishMessage} />
+  </div>
 }
 
-const ChatWithAblyContext = ({ channel }) => {
-  const channelName = `chat:${channel}`
-  const client = new Realtime({ authUrl: "/api/ably" })
-
-  return (
-    <AblyProvider client={client}>
-      <ChannelProvider channelName={channelName}>
-        <Chat channelName={channelName} />
-      </ChannelProvider>
-    </AblyProvider >
-  )
-}
-export default ChatWithAblyContext
+export default Chat

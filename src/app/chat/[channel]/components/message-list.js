@@ -41,7 +41,7 @@ const MessageList = ({ messages, user, onDelete }) => {
       </Menubar>
     </li>
 
-  return <ul> {messages.map(createLi)} </ul>
+  return <div><ul> {messages.map(createLi)} </ul></div>
 
 }
 export default MessageList
