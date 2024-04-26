@@ -1,10 +1,10 @@
-import { currentUser, auth } from '@clerk/nextjs';
+import { currentUser } from '@clerk/nextjs';
 import { SignJWT } from "jose"
 
 const createToken = (clientId, apiKey, claim, capability) => {
+
   const [appId, signingKey] = apiKey.split(":", 2)
   const enc = new TextEncoder()
-  // hack? Can i just use the Clerk token instead of generating a new one? 
   const token = new SignJWT({
     "x-ably-capability": JSON.stringify(capability),
     "x-ably-clientId": clientId,
@@ -19,6 +19,7 @@ const createToken = (clientId, apiKey, claim, capability) => {
 }
 
 const generateCapability = claim => {
+
   if (claim.isMod) {
     return { '*': ['*'] };
   } else {
@@ -31,10 +32,8 @@ const generateCapability = claim => {
 }
 
 export const GET = async () => {
+
   const user = await currentUser()
-  const a = auth()
-  const clerkToken = await a.getToken()
-  console.log('clerkToken', clerkToken)
 
   const userClaim = user.publicMetadata
   const userCapability = generateCapability(userClaim)
