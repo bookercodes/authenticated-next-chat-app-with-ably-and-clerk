@@ -98,33 +98,6 @@ const OnlineList = ({ users }) => {
 
 const Foo = ({ channelName }) => {
 
-  const handleEvent = event => {
-    if (event.name === EVENT_NAMES.MESSAGE) {
-      updateMessages(prev => [...prev, event])
-      return
-    }
-
-    if (event.name === EVENT_NAMES.DELETE) {
-      updateMessages(previousMessages => {
-        const userIsMod = JSON.parse(event.extras.userClaim).isMod
-        const refTimeSerial = event.extras.ref.timeSerial
-
-        return previousMessages.filter(message => {
-          const messageHasSameClientId = message.clientId === event.clientId
-          const messageHasSameTimeSerial = message.extras.timeserial === refTimeSerial
-
-          // If the message comes from the same client or the user is a moderator, drop the message.
-          if (messageHasSameTimeSerial && (messageHasSameClientId || userIsMod)) {
-            return false
-          }
-
-          return true
-        })
-      })
-    }
-
-  }
-
   // if (!user) {
   //   return null
   // }
@@ -133,22 +106,6 @@ const Foo = ({ channelName }) => {
   const { presenceData } = usePresenceListener(channelName)
   const [messages, updateMessages] = useState([])
   usePresence(channelName, { fullName: user?.fullName })
-
-  const sendMesage = message => {
-    publishEvent('message', { text: message, avatarUrl: user.imageUrl })
-  }
-
-  const deleteMessage = timeSerial => {
-    console.log("deleteMessage", timeSerial)
-    publishEvent({
-      name: 'delete',
-      extras: {
-        ref: {
-          timeSerial
-        }
-      }
-    })
-  }
 
   return (
     <div>

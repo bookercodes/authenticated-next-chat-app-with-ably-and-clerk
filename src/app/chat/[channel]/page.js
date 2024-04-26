@@ -10,7 +10,7 @@ const Page = ({ params }) => {
     { path: "/chat/announcements", label: "# Announcements" },
     { path: "/chat/general", label: "# General" },
     { path: "/chat/random", label: "# Random" },
-    { path: "/chat/mods-only", label: "# Mods-only", modsOnly: true },
+    { path: "/chat/mods-only", label: "# Mods-only", modOnly: true },
   ]
 
   return <div>
