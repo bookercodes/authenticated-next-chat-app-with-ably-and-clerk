@@ -16,7 +16,7 @@ const reducer = (prev, event) => {
     case DELETE:
       const isMod = JSON.parse(event.extras.userClaim).isMod
       return prev.filter(msg => {
-        const match = msg.extras.timeserial === event.extras.ref.timeSerial
+        const match = msg.extras.timeserial === event.extras.ref.timeserial
         const ownMsg = msg.clientId === event.clientId
         if (match && (ownMsg || isMod)) {
           return false
@@ -43,7 +43,7 @@ const Chat = ({ channelName }) => {
       name: DELETE,
       extras: {
         ref: {
-          timeSerial
+          timeserial: timeSerial
         }
       }
     })
