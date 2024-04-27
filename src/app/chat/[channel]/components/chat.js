@@ -1,30 +1,28 @@
 'use client'
-
 import { useChannel, } from "ably/react"
 import MessageInput from "./message-input"
 import MessageList from "./message-list"
 import { useUser } from "@clerk/nextjs"
 import { useReducer } from "react"
 
+
+const ADD = "ADD"
+const DELETE = "DELETE"
+
 const reducer = (prev, event) => {
   switch (event.name) {
-    case 'message':
+    case ADD:
       return [...prev, event]
-    case 'delete': {
-      const userIsMod = JSON.parse(event.extras.userClaim).isMod
-      const refTimeSerial = event.extras.ref.timeSerial
-      return prev.filter(message => {
-        const messageHasSameClientId = message.clientId === event.clientId
-        const messageHasSameTimeSerial = message.extras.timeserial === refTimeSerial
-
-        // If the message comes from the same client or the user is a moderator, drop the message.
-        if (messageHasSameTimeSerial && (messageHasSameClientId || userIsMod)) {
+    case DELETE:
+      const isMod = JSON.parse(event.extras.userClaim).isMod
+      return prev.filter(msg => {
+        const match = msg.extras.timeserial === event.extras.ref.timeSerial
+        const ownMsg = msg.clientId === event.clientId
+        if (match && (ownMsg || isMod)) {
           return false
         }
-
         return true
       })
-    }
   }
 }
 
@@ -32,7 +30,7 @@ const Chat = ({ channelName }) => {
 
   const publishMessage = text => {
     publish({
-      name: "message",
+      name: ADD,
       data: {
         text,
         avatarUrl: user.imageUrl
@@ -42,7 +40,7 @@ const Chat = ({ channelName }) => {
 
   const deleteMessage = timeSerial => {
     publish({
-      name: "delete",
+      name: DELETE,
       extras: {
         ref: {
           timeSerial
