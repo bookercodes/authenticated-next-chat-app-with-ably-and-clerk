@@ -21,7 +21,7 @@ export default function RootLayout({ children }) {
               <SignInButton mode={'modal'} />
             </SignedOut>
             <SignedIn>
-              <UserButton showName={true} afterSignOutUrl="/" />
+              <UserButton showName afterSignOutUrl="/" />
             </SignedIn>
           </nav>
 
