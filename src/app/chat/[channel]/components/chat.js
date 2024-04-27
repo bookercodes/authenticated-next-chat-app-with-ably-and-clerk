@@ -25,7 +25,6 @@ const reducer = (prev, event) => {
         return true
       })
     case "clear":
-      console.log("Clearing")
       return []
   }
 }
@@ -58,16 +57,20 @@ const Chat = ({ channelName }) => {
   const { channel, publish } = useChannel(channelName, dispatch)
 
   useEffect(() => {
-    // console.log("firing history");
-    // const fetchHistory = async () => {
-    //   const h = await channel.history({ limit: 2 })
-    //   h.items.forEach(dispatch)
-    // }
-    // fetchHistory()
-    // return () => {
-    //   console.log("cleanup on isle 3");
-    //   dispatch({ name: "clear" })
-    // }
+    // https://react.dev/learn/synchronizing-with-effects#fetching-data
+    // In general I see a lot of components firing twice in development mode and when using HMR
+    // makes me think I don't fully understand all this
+    let ignore = false
+    const fetchHist = async () => {
+      const history = await channel.history({ limit: 1000 })
+      if (!ignore)
+        history.items.forEach(dispatch)
+    }
+    fetchHist()
+    return () => {
+      ignore = true
+      dispatch({ name: "clear" })
+    }
   }, [channel])
 
   return <div className="flex flex-col justify-end h-full">

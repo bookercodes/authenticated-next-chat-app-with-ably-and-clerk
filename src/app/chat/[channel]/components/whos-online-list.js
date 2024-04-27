@@ -23,7 +23,7 @@ const WhosOnlineList = ({ channelName }) => {
   }
 
   return <div>
-    <h2>Present and together right now with you in {channelName}</h2>
+    <h2 className="mb-2.5">Present and together right now with you in {channelName}:</h2>
     <ul>{users.map(createLi)}</ul>
   </div>
 }
