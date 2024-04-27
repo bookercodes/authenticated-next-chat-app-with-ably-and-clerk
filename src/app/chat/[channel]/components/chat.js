@@ -3,7 +3,7 @@ import { useChannel, } from "ably/react"
 import MessageInput from "./message-input"
 import MessageList from "./message-list"
 import { useUser } from "@clerk/nextjs"
-import { useReducer } from "react"
+import { useReducer, useEffect } from "react"
 
 
 const ADD = "ADD"
@@ -15,6 +15,7 @@ const reducer = (prev, event) => {
       return [...prev, event]
     case DELETE:
       const isMod = JSON.parse(event.extras.userClaim).isMod
+      // Can this be expressed more cleanly?
       return prev.filter(msg => {
         const match = msg.extras.timeserial === event.extras.ref.timeserial
         const ownMsg = msg.clientId === event.clientId
@@ -23,6 +24,9 @@ const reducer = (prev, event) => {
         }
         return true
       })
+    case "clear":
+      console.log("Clearing")
+      return []
   }
 }
 
@@ -51,7 +55,20 @@ const Chat = ({ channelName }) => {
 
   const { user } = useUser()
   const [messages, dispatch] = useReducer(reducer, [])
-  const { publish } = useChannel(channelName, dispatch)
+  const { channel, publish } = useChannel(channelName, dispatch)
+
+  useEffect(() => {
+    // console.log("firing history");
+    // const fetchHistory = async () => {
+    //   const h = await channel.history({ limit: 2 })
+    //   h.items.forEach(dispatch)
+    // }
+    // fetchHistory()
+    // return () => {
+    //   console.log("cleanup on isle 3");
+    //   dispatch({ name: "clear" })
+    // }
+  }, [channel])
 
   return <div className="flex flex-col justify-end h-full">
     <MessageList

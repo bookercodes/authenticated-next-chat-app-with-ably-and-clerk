@@ -6,8 +6,6 @@ import { Circle } from 'lucide-react';
 const WhosOnlineList = ({ channelName }) => {
 
   const { user } = useUser()
-  console.log("rendering WhosOnlineList")
-  console.log("user", user)
   const { presenceData } = usePresenceListener(channelName)
   usePresence(channelName, { fullName: user.fullName })
   const users = presenceData

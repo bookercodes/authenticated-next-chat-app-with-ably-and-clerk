@@ -24,9 +24,9 @@ const generateCapability = claim => {
     return { '*': ['*'] };
   } else {
     return {
-      'chat:general': ['subscribe', 'publish', 'presence'],
-      'chat:random': ['subscribe', 'publish', 'presence'],
-      'chat:announcements': ['subscribe', 'presence']
+      'chat:general': ['subscribe', 'publish', 'presence', 'history'],
+      'chat:random': ['subscribe', 'publish', 'presence', 'history'],
+      'chat:announcements': ['subscribe', 'presence', 'history']
     }
   }
 }
