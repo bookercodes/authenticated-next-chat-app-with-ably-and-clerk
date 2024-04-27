@@ -30,7 +30,7 @@ const Page = ({ params }) => {
           <div className="border-r border-gray-200 p-5">
             <ChannelList channels={channels} />
           </div>
-          <div className="col-span-2 p-5 overflow-hidden">
+          <div className="col-span-2 bg-gray-50" >
             <Chat channelName={channelName} />
           </div>
           <div className="border-l border-gray-200 p-5">

@@ -3,8 +3,7 @@ import { useChannel, } from "ably/react"
 import MessageInput from "./message-input"
 import MessageList from "./message-list"
 import { useUser } from "@clerk/nextjs"
-import { useReducer, useEffect } from "react"
-
+import { useReducer, useEffect, useRef } from "react"
 
 const ADD = "ADD"
 const DELETE = "DELETE"
@@ -55,6 +54,7 @@ const Chat = ({ channelName }) => {
   const { user } = useUser()
   const [messages, dispatch] = useReducer(reducer, [])
   const { channel, publish } = useChannel(channelName, dispatch)
+  const scrollRef = useRef(null)
 
   useEffect(() => {
     // https://react.dev/learn/synchronizing-with-effects#fetching-data
@@ -73,13 +73,24 @@ const Chat = ({ channelName }) => {
     }
   }, [channel])
 
-  return <div className="flex flex-col justify-end h-full">
-    <MessageList
-      messages={messages}
-      user={user}
-      onDelete={deleteMessage} />
-    <MessageInput onSubmit={publishMessage} />
-  </div>
+  useEffect(() => {
+    scrollRef.current.scrollIntoView()
+  }, [messages.length])
+
+  return (
+    <div className="flex flex-col h-full">
+      <div className="mt-auto h-80 overflow-y-scroll">
+        <MessageList
+          messages={messages}
+          user={user}
+          onDelete={deleteMessage} />
+        <div ref={scrollRef} />
+      </div>
+      <div>
+        <MessageInput onSubmit={publishMessage} />
+      </div>
+    </div >
+  )
 }
 
 export default Chat
