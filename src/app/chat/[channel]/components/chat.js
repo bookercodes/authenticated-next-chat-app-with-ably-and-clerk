@@ -87,7 +87,9 @@ const Chat = ({ channelName }) => {
         <div ref={scrollRef} />
       </div>
       <div>
-        <MessageInput onSubmit={publishMessage} />
+        <MessageInput
+          onSubmit={publishMessage}
+          readOnly={channelName === "chat:announcements" && !user.publicMetadata.isMod} />
       </div>
     </div >
   )

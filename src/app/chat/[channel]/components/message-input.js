@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
 
-const MessageInput = ({ onSubmit }) => {
+const MessageInput = ({ onSubmit, readOnly }) => {
   const [input, setInput] = useState('')
 
   const handleChange = e => {
@@ -20,7 +20,8 @@ const MessageInput = ({ onSubmit }) => {
         type="text"
         value={input}
         onChange={handleChange}
-        placeholder="Type a message"
+        disabled={readOnly}
+        placeholder={readOnly ? "You can't post here because you're not a mod." : "Your message here"}
       />
     </form>
   )
