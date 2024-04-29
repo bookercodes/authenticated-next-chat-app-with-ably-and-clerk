@@ -62,14 +62,14 @@ const Chat = ({ channelName }) => {
     // makes me think I don't fully understand all this
     let ignore = false
     const fetchHist = async () => {
-      const history = await channel.history({ limit: 1000 })
+      const history = await channel.history({ limit: 1000, direction: "forwards" })
       if (!ignore)
         history.items.forEach(dispatch)
     }
     fetchHist()
     return () => {
       ignore = true
-      dispatch({ name: "clear" })
+      // dispatch({ name: "clear" })
     }
   }, [channel])
 
