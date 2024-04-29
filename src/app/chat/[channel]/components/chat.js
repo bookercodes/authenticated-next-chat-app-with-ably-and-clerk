@@ -79,7 +79,7 @@ const Chat = ({ channelName }) => {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="mt-auto h-80 overflow-y-scroll">
+      <div className="mt-auto overflow-hidden">
         <MessageList
           messages={messages}
           user={user}
