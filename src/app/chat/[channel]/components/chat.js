@@ -62,7 +62,7 @@ const Chat = ({ channelName }) => {
     // makes me think I don't fully understand all this
     let ignore = false
     const fetchHist = async () => {
-      const history = await channel.history({ limit: 1000, direction: "forwards" })
+      const history = await channel.history({ limit: 100, direction: "forwards" })
       if (!ignore)
         history.items.forEach(dispatch)
     }
@@ -79,14 +79,14 @@ const Chat = ({ channelName }) => {
 
   return (
     <>
-      <div className="mt-auto overflow-y-auto p-5">
+      <div className="overflow-y-auto p-5">
         <MessageList
           messages={messages}
           user={user}
           onDelete={deleteMessage} />
         <div ref={scrollRef} />
       </div>
-      <div className="p-5">
+      <div className="p-5 mt-auto">
         <MessageInput
           onSubmit={publishMessage}
           readOnly={channelName === "chat:announcements" && !user.publicMetadata.isMod} />
