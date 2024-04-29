@@ -1,4 +1,4 @@
-import { currentUser } from '@clerk/nextjs';
+import { currentUser } from '@clerk/nextjs/server'
 import { SignJWT } from "jose"
 
 const createToken = (clientId, apiKey, claim, capability) => {

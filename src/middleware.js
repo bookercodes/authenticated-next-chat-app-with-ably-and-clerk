@@ -1,12 +1,14 @@
-import { authMiddleware } from "@clerk/nextjs";
+import {
+  clerkMiddleware,
+  createRouteMatcher
+} from '@clerk/nextjs/server';
 
-export default authMiddleware({
-  publicRoutes: "/"
+const isChatRoute = createRouteMatcher(['/chat(.*)'])
+
+export default clerkMiddleware((auth, req) => {
+  if (isChatRoute(req)) auth().protect()
 })
 
 export const config = {
-  matcher: [
-    "/((?!.+\\.[\\w]+$|_next).*)",
-    "/",
-    "/  (api|trpc)(.*)"],
+  matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
 }

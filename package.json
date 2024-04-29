@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@clerk/nextjs": "^4.29.12",
+    "@clerk/nextjs": "^5.0.3",
     "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-menubar": "^1.0.4",
     "ably": "^2.0.2",
