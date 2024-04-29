@@ -78,20 +78,20 @@ const Chat = ({ channelName }) => {
   }, [messages.length])
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="mt-auto overflow-hidden">
+    <>
+      <div className="mt-auto overflow-y-auto p-5">
         <MessageList
           messages={messages}
           user={user}
           onDelete={deleteMessage} />
         <div ref={scrollRef} />
       </div>
-      <div>
+      <div className="p-5">
         <MessageInput
           onSubmit={publishMessage}
           readOnly={channelName === "chat:announcements" && !user.publicMetadata.isMod} />
       </div>
-    </div >
+    </>
   )
 }
 
