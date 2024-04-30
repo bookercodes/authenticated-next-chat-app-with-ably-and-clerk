@@ -18,7 +18,7 @@ export default function RootLayout({ children }) {
           <nav className="flex justify-between p-5 border-b border-gray-200">
             <h1 className="font-bold">Comet</h1>
             <SignedOut>
-              <SignInButton mode={'modal'} />
+              <SignInButton mode='modal' />
             </SignedOut>
             <SignedIn>
               <UserButton showName afterSignOutUrl="/" />

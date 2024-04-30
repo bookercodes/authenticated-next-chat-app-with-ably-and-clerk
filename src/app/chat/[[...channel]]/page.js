@@ -19,7 +19,7 @@ const Page = ({ params }) => {
     authUrl: "/api/ably",
     autoConnect: typeof window !== 'undefined'
   })
-  const channelName = `chat:${params.channel}`
+  const channelName = `chat:${params.channel ?? "general"}`
 
   return (
     // How do I stop this reconnecting every time? useCallback? Put it in Layout? Something else?
