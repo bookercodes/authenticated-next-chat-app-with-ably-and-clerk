@@ -1,4 +1,4 @@
-## Comet
+## Authenticated Next WebSocket chat app
 
 1. Clone the repo
 2. `cd` into the local clone

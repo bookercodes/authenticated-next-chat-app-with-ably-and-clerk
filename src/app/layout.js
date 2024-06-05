@@ -6,7 +6,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Comet"
+  title: "Clover"
 }
 
 export default function RootLayout({ children }) {
@@ -16,7 +16,7 @@ export default function RootLayout({ children }) {
         <body className={inter.className}>
 
           <nav className="flex justify-between p-5 border-b border-gray-200">
-            <h1 className="font-bold">Comet</h1>
+            <h1 className="font-bold">Clover</h1>
             <SignedOut>
               <SignInButton mode='modal' />
             </SignedOut>
